@@ -46,7 +46,7 @@ def plot_NvsI(g_I,r_I,g_prop,r_prop,n,Title):
     plt.close(fig) 
 
 # Plot the Cell number vs Time
-def plot_Nvst(df,Title,fc=False):
+def plot_Nvst(df,Title,e_set,fc=False):
     fig=plt.figure(figsize=(15,10))
     # Plot 
     plt.plot(df['t'],df['GFP'],c='tab:green',label='GFP')
@@ -56,16 +56,17 @@ def plot_Nvst(df,Title,fc=False):
     plt.xlabel('Time (days)')
     if fc:
         plt.ylabel('Fold Change')
+        figname='../figures/'+e_set+'/Plot/fc/'+Title+'-Nvst.svg'
     else:
         plt.ylabel('Cell count')
+        figname='../figures/'+e_set+'/Plot/'+Title+'-Nvst.svg'
     plt.title(Title)
     plt.tight_layout()
-    figname='../figures/'+Title+'-Nvst.svg'
     plt.savefig(figname)
     plt.close(fig) 
 
 # 
-def exp_fit(df,Title,fc):
+def exp_fit(df,Title,e_set,fc):
     fig=plt.figure(figsize=(15,10))
     # tdata = np.linspace(df['t'].iloc[0], df['t'].iloc[-1], 100)
     tdata = np.linspace(df['t'].iloc[0], 20, 100)
@@ -92,13 +93,19 @@ def exp_fit(df,Title,fc):
     plt.plot(tdata,y_fit,c='tab:red',linestyle='dashed',label='RFP-expo')
     # Matplotlib label stuff
     plt.legend()
+    # Set y-axis limits to match the original data
+    ymin = min(df.GFP.min(),df.RFP.min())
+    ymax = max(df.GFP.max(),df.RFP.max())
+    yrange = ymax - ymin
+    plt.ylim(ymin - 0.1*yrange, ymax + 0.1*yrange)
     plt.xlabel('Time (days)')
     if fc:
         plt.ylabel('Fold Change')
+        figname='../figures/'+e_set+'/Expofit/fc/'+Title+'-Nvst.svg'
     else:
         plt.ylabel('Cell count')
+        figname='../figures/'+e_set+'/Expofit/'+Title+'-Nvst.svg'
     plt.title(Title)
     plt.tight_layout()
-    figname='../figures/'+Title+'-expo.svg'
     plt.savefig(figname)
     plt.close(fig) 
