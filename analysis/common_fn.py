@@ -109,3 +109,31 @@ def exp_fit(df,Title,e_set,fc):
     plt.tight_layout()
     plt.savefig(figname)
     plt.close(fig) 
+
+# Get a dataframe for doubling time over time
+def df_td(df,Title,e_set):
+    dt = df['t'].diff().values[1:]
+    t = df['t'].rolling(2, min_periods=1).mean()[1:]
+    fc = np.log2(df[['GFP','RFP']]+1).diff().values[1:]
+    t_d = np.divide(dt,fc.T).T
+    df_td = pd.DataFrame(t)
+    df_td[['GFP','RFP']] = t_d
+    filename='../analysed_data/'+e_set+'/'+Title+'-t_d.csv'
+    df_td.to_csv(filename)
+    return df_td
+
+# Plot the Doubling Time (growth rate) vs Time
+def plot_td(df,Title,e_set):
+    fig=plt.figure(figsize=(15,10))
+    # Plot 
+    plt.plot(df['t'],df['GFP'],c='tab:green',label='GFP')
+    plt.plot(df['t'],df['RFP'],c='tab:red',label='RFP')
+    # Matplotlib label stuff
+    plt.legend()
+    plt.xlabel('Time (days)')
+    plt.ylabel('Doubling time (days)')
+    figname='../figures/'+e_set+'/doublingtime/'+Title+'-t_d.svg'
+    plt.title(Title)
+    plt.tight_layout()
+    plt.savefig(figname)
+    plt.close(fig) 
